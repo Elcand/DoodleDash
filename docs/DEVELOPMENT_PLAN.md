@@ -467,3 +467,31 @@ npx supabase gen types typescript --project-id <ref> > src/types/database.ts
 2. Fase 1 skema SQL.
 3. Fase 3 create/join (DB dulu, UI menyusul).
 4. Baru masuk Fase 4 kanvas.
+
+---
+
+## 10. Progress Log
+
+### Fase 0 — SELESAI
+
+Yang dikerjakan:
+- Peer deps: `expo-constants`, `expo-linking`, `react-native-worklets`, `@react-native-async-storage/async-storage`, `expo-asset` (peer `expo-audio`).
+- `expo-av` dihapus → `expo-audio`.
+- Patch drift diselesaikan: `expo` 58.0.17, `expo-router` 58.0.25, `expo-status-bar` 58.0.4.
+- **Deviasi dari rencana:** `react-dom` di-pin eksplisit ke `19.3.0`. Tanpa ini `npm install` gagal `ERESOLVE` karena `react-dom@19.3.1` transitive menuntut `react ^19.3.1` sementara SDK 58 memakai `react@19.3.0`.
+- `url-polyfill` diganti `react-native-url-polyfill` (yang direkomendasikan untuk Supabase di React Native).
+- Expo Router aktif: `main: expo-router/entry`, `App.tsx` & `index.ts` dihapus, `src/app/_layout.tsx` + `src/app/index.tsx` dibuat, `scheme: doodledash` di `app.json`.
+- Alias import `@/*` → `./src/*` di `tsconfig.json`.
+- Supabase client memakai `EXPO_PUBLIC_SUPABASE_URL` / `EXPO_PUBLIC_SUPABASE_ANON_KEY`; `.env` dibuat dan di-gitignore, `.env.example` disediakan.
+- ESLint flat config (`eslint.config.js`) + script `lint` dan `typecheck`.
+
+Verifikasi:
+- `npx expo-doctor` → **20/20 passed**.
+- `npx tsc --noEmit` → bersih.
+- `npm run lint` → bersih.
+- `npx expo export --platform android` → bundle sukses (1637 modules), root router terdeteksi `src/app`.
+
+Catatan untuk fase berikutnya:
+- `.env` sudah berisi kredensial project saat ini; pastikan tidak pernah di-commit.
+- `assets/` belum punya file SFX — perlu ditambahkan di Fase 9.
+- Belum ada test runner; bila perlu unit test, setup Jest baru di Fase 10–11.

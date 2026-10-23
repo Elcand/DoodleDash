@@ -1,12 +1,21 @@
-import 'url-polyfill';
+import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 
-// Ganti nilai di bawah dengan credentials dari Supabase Project Settings > API
-const SUPABASE_URL = 'https://jmliptdugztdcknhwool.supabase.co/rest/v1/';
-const SUPABASE_ANON_KEY = 'sb_publishable_77cGCXvis-cBoo3oEQK2cA_rW_3uTXd';
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing Supabase env vars. Copy .env.example to .env and fill EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.',
+  );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
+    storage: AsyncStorage,
+    autoRefreshToken: false,
     persistSession: false,
+    detectSessionInUrl: false,
   },
 });
